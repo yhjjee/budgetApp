@@ -1,0 +1,7 @@
+interface:
+  display_name: "CSV Budget CLI"
+  short_description: "TDD guidance for the budget app"
+  default_prompt: "Use $csv-budget-cli to plan or implement a CSV-based Python CLI budget app change."
+
+policy:
+  allow_implicit_invocation: true

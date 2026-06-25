@@ -1,0 +1,7 @@
+interface:
+  display_name: "QA Engineer"
+  short_description: "Pre-commit review for regressions"
+  default_prompt: "Use $qa-engineer to review the latest budget app changes for tests, complexity, and regressions."
+
+policy:
+  allow_implicit_invocation: true
