@@ -1,6 +1,8 @@
 """Tests for budget.core."""
 
-from budget.core import add_transaction, filter_by_category
+from pathlib import Path
+
+from budget.core import add_transaction, filter_by_category, load_transactions_from_csv
 
 
 def test_add_transaction_increases_length() -> None:
@@ -168,3 +170,29 @@ def test_filter_by_category_returns_independent_results() -> None:
 
     assert len(transactions) == 2
     assert len(result) == 2
+
+
+def test_load_transactions_from_csv_reads_step1_sample() -> None:
+    """CSV loading should match the step1 sample data shape."""
+    file_path = Path("data/step1_transactions.csv")
+
+    result = load_transactions_from_csv(file_path)
+
+    assert len(result) == 10
+    assert result[0] == {
+        "date": "2026-01-05",
+        "type": "지출",
+        "category": "식비",
+        "description": "점심식사",
+        "amount": -12000,
+        "memo": "",
+    }
+    assert result[-1] == {
+        "date": "2026-01-28",
+        "type": "기타수입",
+        "category": "기타수입",
+        "description": "중고 판매",
+        "amount": 25000,
+        "memo": "중고마켓",
+    }
+    assert isinstance(result[0]["amount"], int)
