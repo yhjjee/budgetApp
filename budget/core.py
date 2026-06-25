@@ -26,7 +26,12 @@ def filter_by_category(
     category: str,
 ) -> list[dict[str, Any]]:
     """Return transactions that match the given category."""
-    pass
+    normalized_category = category.casefold()
+    return [
+        transaction
+        for transaction in transactions
+        if transaction.get("category", "").casefold() == normalized_category
+    ]
 
 
 def load_transactions_from_csv(file_path: Path) -> list[dict[str, Any]]:

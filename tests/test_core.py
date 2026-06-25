@@ -1,6 +1,6 @@
 """Tests for budget.core."""
 
-from budget.core import add_transaction
+from budget.core import add_transaction, filter_by_category
 
 
 def test_add_transaction_increases_length() -> None:
@@ -78,3 +78,93 @@ def test_add_transaction_allows_empty_description() -> None:
     result = add_transaction(transactions, transaction)
 
     assert result[-1]["description"] == ""
+
+
+def test_filter_by_category_matches_case_insensitively() -> None:
+    """Category matching should ignore case."""
+    transactions = [
+        {
+            "date": "2026-01-05",
+            "type": "지출",
+            "category": "식비",
+            "description": "점심식사",
+            "amount": -12000,
+            "memo": "",
+        },
+        {
+            "date": "2026-01-07",
+            "type": "수입",
+            "category": "급여",
+            "description": "월급",
+            "amount": 3500000,
+            "memo": "1월급여",
+        },
+        {
+            "date": "2026-01-10",
+            "type": "지출",
+            "category": "식비",
+            "description": "저녁",
+            "amount": -15000,
+            "memo": "",
+        },
+    ]
+
+    result = filter_by_category(transactions, "식비")
+
+    assert len(result) == 2
+    assert all(item["category"] == "식비" for item in result)
+
+
+def test_filter_by_category_returns_empty_list_for_missing_category() -> None:
+    """Unknown categories should return an empty list."""
+    transactions = [
+        {
+            "date": "2026-01-05",
+            "type": "지출",
+            "category": "식비",
+            "description": "점심식사",
+            "amount": -12000,
+            "memo": "",
+        },
+    ]
+
+    result = filter_by_category(transactions, "없는카테고리")
+
+    assert result == []
+
+
+def test_filter_by_category_returns_independent_results() -> None:
+    """Filtered results should be independent from the original list."""
+    transactions = [
+        {
+            "date": "2026-01-05",
+            "type": "지출",
+            "category": "식비",
+            "description": "점심식사",
+            "amount": -12000,
+            "memo": "",
+        },
+        {
+            "date": "2026-01-10",
+            "type": "지출",
+            "category": "교통",
+            "description": "지하철",
+            "amount": -1500,
+            "memo": "",
+        },
+    ]
+
+    result = filter_by_category(transactions, "식비")
+    result.append(
+        {
+            "date": "2026-01-99",
+            "type": "지출",
+            "category": "식비",
+            "description": "추가",
+            "amount": -1,
+            "memo": "",
+        }
+    )
+
+    assert len(transactions) == 2
+    assert len(result) == 2
