@@ -11,7 +11,9 @@ def add_transaction(
     transaction: dict[str, Any],
 ) -> list[dict[str, Any]]:
     """Add a transaction to the transaction list and return the updated list."""
-    pass
+    updated_transactions = transactions.copy()
+    updated_transactions.append(transaction)
+    return updated_transactions
 
 
 def get_balance(transactions: list[dict[str, Any]]) -> float:
